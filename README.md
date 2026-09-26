@@ -131,3 +131,14 @@
 ## 版本
 
 `0.0.1`：首个公开版本（DOM 收集、自动同步、Popup DOM/API 手动同步、失败飘窗）。
+
+---
+
+## 商店上架
+
+打包与文案见仓库内：
+
+- 清单（标出需你补充的项）：[`store/CHECKLIST.md`](./store/CHECKLIST.md)
+- 可粘贴文案：[`store/LISTING.md`](./store/LISTING.md)
+- 隐私政策：[`docs/privacy.html`](./docs/privacy.html)
+- 本地打包：`powershell -File scripts/pack.ps1` → 生成 `dist/bilibili-name-history-0.0.1.zip`

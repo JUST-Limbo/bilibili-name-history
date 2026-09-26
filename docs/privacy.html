@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>隐私政策 · B站曾用名</title>
+  <style>
+    body { font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 760px; margin: 32px auto; padding: 0 16px; color: #18191c; }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.2rem; margin-top: 1.6em; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #e3e5e7; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f6f7f8; }
+    .note { color: #c45600; background: #fff7e6; border: 1px solid #ffd591; padding: 10px 12px; border-radius: 8px; }
+    a { color: #00a1d6; }
+  </style>
+</head>
+<body>
+  <h1>隐私政策 · B站曾用名</h1>
+  <p><strong>生效日期：</strong>2026-09-26<br />
+  <strong>适用产品：</strong>浏览器扩展「B站曾用名」（Chrome / Edge，Manifest V3）<br />
+  <strong>开源仓库：</strong><a href="https://github.com/JUST-Limbo/bilibili-name-history">JUST-Limbo/bilibili-name-history</a></p>
+  <p class="note">本扩展<strong>仅供学习与技术研究</strong>。使用前请阅读并同意本政策及仓库免责声明。</p>
+
+  <h2>我们收集什么数据</h2>
+  <p>本扩展在你的浏览器<strong>本地</strong>处理与存储以下信息（默认不上传到开发者自有服务器）：</p>
+  <table>
+    <tr><th>数据类型</th><th>用途</th></tr>
+    <tr><td>B 站用户 mid（UID）与昵称快照</td><td>记录昵称变化，展示「曾用名」</td></tr>
+    <tr><td>你自己的 mid</td><td>避免把自己记入备份库</td></tr>
+    <tr><td>扩展设置（同步速度、自动同步开关等）</td><td>保存偏好</td></tr>
+    <tr><td>导入/导出的备份 JSON</td><td>仅在你主动操作时读写本地文件</td></tr>
+  </table>
+
+  <h2>数据如何获取</h2>
+  <ul>
+    <li><strong>页面 DOM</strong>：在 space.bilibili.com、www.bilibili.com 等页面读取可见的 UP 链接与昵称文案。</li>
+    <li><strong>可选 API</strong>：若你主动使用「API 同步」或将自动同步设为 API 方式，扩展会向 api.bilibili.com 请求关注列表等相关接口（使用浏览器已有登录态）。</li>
+    <li><strong>Cookie</strong>：扩展不单独窃取 Cookie；请求 B 站接口时由浏览器按站点规则携带登录态。</li>
+  </ul>
+
+  <h2>数据存储与传输</h2>
+  <ul>
+    <li>昵称历史与设置保存在浏览器扩展本地存储。</li>
+    <li>开发者不运营用于收集上述数据的后端；不会把关注列表或昵称历史主动发送到第三方分析服务。</li>
+    <li>使用 API 同步时，数据仅在浏览器与 bilibili.com / api.bilibili.com 之间传输，并遵循 B 站条款。</li>
+  </ul>
+
+  <h2>权限说明（摘要）</h2>
+  <table>
+    <tr><th>权限 / 主机权限</th><th>原因</th></tr>
+    <tr><td>storage</td><td>本地保存昵称历史与设置</td></tr>
+    <tr><td>offscreen</td><td>后台标签节流时驱动 DOM 翻页扫描</td></tr>
+    <tr><td>scripting</td><td>自动同步时向关注页注入必要辅助脚本</td></tr>
+    <tr><td>https://space.bilibili.com/*</td><td>空间页 / 关注列表 DOM 收集与展示</td></tr>
+    <tr><td>https://www.bilibili.com/*</td><td>视频等页面 DOM 收集与展示</td></tr>
+    <tr><td>https://api.bilibili.com/*</td><td><strong>可选</strong> API 同步关注列表</td></tr>
+  </table>
+
+  <h2>数据删除</h2>
+  <ul>
+    <li>Popup「清空本地备份」可删除本机昵称历史。</li>
+    <li>卸载扩展后，浏览器通常会清除该扩展本地数据。</li>
+    <li>导出的 JSON 备份由你自行保管与删除。</li>
+  </ul>
+
+  <h2>第三方服务</h2>
+  <p>功能依赖哔哩哔哩网站与接口，适用其官方隐私政策。本扩展为非官方第三方工具，与哔哩哔哩公司无关。</p>
+
+  <h2>联系方式</h2>
+  <p class="note">【需你补充：对外联系邮箱】</p>
+  <p>或通过 GitHub Issues：<a href="https://github.com/JUST-Limbo/bilibili-name-history/issues">提交 Issue</a></p>
+</body>
+</html>
