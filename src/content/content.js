@@ -297,12 +297,16 @@
     return Array.from(map.values());
   }
 
-  async function applyFollowItems(items, force) {
+  async function applyFollowItems(items, force, roundMeta) {
     if (!items.length) return { total: 0, changed: 0 };
-    await send('RECORD_BATCH', {
+    const meta = roundMeta || {};
+    const payload = {
       force: !!force,
       items: items.map((it) => ({ mid: it.mid, name: it.name }))
-    });
+    };
+    if (typeof meta.roundSeen === 'number') payload.roundSeen = meta.roundSeen;
+    if (typeof meta.pages === 'number') payload.pages = meta.pages;
+    await send('RECORD_BATCH', payload);
     const batch = await send('LOOKUP_BATCH', {
       items: items.map((it) => ({ mid: it.mid, name: it.name }))
     });
@@ -685,17 +689,27 @@
       toastScanFailure(reason);
     }
 
+    // 无论手动/托管，整轮结束都写入累计人数，避免 Popup 只显示最后一页
+    const roundOk =
+      !!reason &&
+      (reason.indexOf('末页') !== -1 ||
+        reason.indexOf('未找到下一页') !== -1 ||
+        reason === '已停止' ||
+        (pages > 0 &&
+          reason.indexOf('无响应') === -1 &&
+          reason.indexOf('未识别') === -1 &&
+          reason.indexOf('无法启动') === -1));
+    await send('DOM_SCAN_ROUND_DONE', {
+      ok: roundOk,
+      reason: reason || '',
+      pages: pages,
+      seen: seen,
+      elapsed: elapsed
+    });
+
     if (wasManaged) {
-      const ok =
-        !!reason &&
-        (reason.indexOf('末页') !== -1 ||
-          reason.indexOf('未找到下一页') !== -1 ||
-          (pages > 0 &&
-            reason.indexOf('无响应') === -1 &&
-            reason.indexOf('未识别') === -1 &&
-            reason.indexOf('无法启动') === -1));
       await send('AUTO_SYNC_FINISHED', {
-        ok: ok,
+        ok: roundOk,
         reason: reason || '',
         pages: pages,
         seen: seen,
@@ -745,8 +759,11 @@
       for (let i = 0; i < items.length; i++) {
         autoState.seen.add(items[i].mid);
       }
-      await applyFollowItems(items, true);
       autoState.pages += 1;
+      await applyFollowItems(items, true, {
+        roundSeen: autoState.seen.size,
+        pages: autoState.pages
+      });
       updateAutoProgress('正在收集本页…');
 
       const next = findNextPageButton();
@@ -794,6 +811,8 @@
     autoState.totalPages = estimateTotalPages(0);
 
     ensureFollowToolbar();
+    const toolbar = document.getElementById('bnh-follow-toolbar');
+    if (toolbar) setToolbarCollapsed(toolbar, false);
     const autoBtn = document.getElementById('bnh-scan-auto');
     const stopBtn = document.getElementById('bnh-scan-stop');
     if (autoBtn) autoBtn.hidden = true;
@@ -849,6 +868,131 @@
     await startAutoPaging({ managed: true });
   }
 
+  function toolbarStorageKey(kind) {
+    return 'bnh-follow-toolbar-' + kind;
+  }
+
+  function readToolbarCollapsed() {
+    try {
+      return localStorage.getItem(toolbarStorageKey('collapsed')) === '1';
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function writeToolbarCollapsed(collapsed) {
+    try {
+      localStorage.setItem(toolbarStorageKey('collapsed'), collapsed ? '1' : '0');
+    } catch (_e) {
+      // ignore
+    }
+  }
+
+  function readToolbarPos() {
+    try {
+      const raw = localStorage.getItem(toolbarStorageKey('pos'));
+      if (!raw) return null;
+      const pos = JSON.parse(raw);
+      if (!pos || typeof pos.left !== 'number' || typeof pos.top !== 'number') return null;
+      return pos;
+    } catch (_e) {
+      return null;
+    }
+  }
+
+  function writeToolbarPos(left, top) {
+    try {
+      localStorage.setItem(
+        toolbarStorageKey('pos'),
+        JSON.stringify({ left: left, top: top })
+      );
+    } catch (_e) {
+      // ignore
+    }
+  }
+
+  function clampToolbarPos(bar, left, top) {
+    const margin = 8;
+    const w = bar.offsetWidth || 260;
+    const h = bar.offsetHeight || 40;
+    const maxL = Math.max(margin, window.innerWidth - w - margin);
+    const maxT = Math.max(margin, window.innerHeight - h - margin);
+    return {
+      left: Math.min(maxL, Math.max(margin, left)),
+      top: Math.min(maxT, Math.max(margin, top))
+    };
+  }
+
+  function applyToolbarPos(bar, left, top) {
+    const pos = clampToolbarPos(bar, left, top);
+    bar.style.left = pos.left + 'px';
+    bar.style.top = pos.top + 'px';
+    bar.style.right = 'auto';
+    bar.style.bottom = 'auto';
+    writeToolbarPos(pos.left, pos.top);
+  }
+
+  function setToolbarCollapsed(bar, collapsed) {
+    if (collapsed) bar.classList.add('bnh-tb-collapsed');
+    else bar.classList.remove('bnh-tb-collapsed');
+    const btn = document.getElementById('bnh-tb-toggle');
+    if (btn) {
+      btn.textContent = collapsed ? '展开' : '收起';
+      btn.setAttribute('title', collapsed ? '展开面板' : '收起面板');
+      btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    }
+    writeToolbarCollapsed(collapsed);
+  }
+
+  function bindToolbarDrag(bar) {
+    const head = bar.querySelector('.bnh-tb-head');
+    if (!head) return;
+    let dragging = false;
+    let moved = false;
+    let startX = 0;
+    let startY = 0;
+    let originLeft = 0;
+    let originTop = 0;
+
+    function onMove(ev) {
+      if (!dragging) return;
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+      moved = true;
+      applyToolbarPos(bar, originLeft + dx, originTop + dy);
+    }
+
+    function onUp() {
+      if (!dragging) return;
+      dragging = false;
+      bar.classList.remove('bnh-tb-dragging');
+      document.removeEventListener('mousemove', onMove, true);
+      document.removeEventListener('mouseup', onUp, true);
+    }
+
+    head.addEventListener('mousedown', (ev) => {
+      if (ev.button !== 0) return;
+      const t = ev.target;
+      if (t && (t.id === 'bnh-tb-toggle' || (t.closest && t.closest('#bnh-tb-toggle')))) {
+        return;
+      }
+      const rect = bar.getBoundingClientRect();
+      dragging = true;
+      moved = false;
+      startX = ev.clientX;
+      startY = ev.clientY;
+      originLeft = rect.left;
+      originTop = rect.top;
+      bar.classList.add('bnh-tb-dragging');
+      // 从默认 right/bottom 切到 left/top，便于拖动
+      applyToolbarPos(bar, originLeft, originTop);
+      document.addEventListener('mousemove', onMove, true);
+      document.addEventListener('mouseup', onUp, true);
+      ev.preventDefault();
+    });
+  }
+
   function ensureFollowToolbar() {
     if (!isFollowListPath()) return;
     if (document.getElementById('bnh-follow-toolbar')) return;
@@ -856,7 +1000,12 @@
     const bar = document.createElement('div');
     bar.id = 'bnh-follow-toolbar';
     bar.innerHTML =
+      '<div class="bnh-tb-head">' +
+      '<span class="bnh-tb-grip" aria-hidden="true" title="拖动">⋮⋮</span>' +
       '<div class="bnh-tb-title">曾用名 · 本页扫描</div>' +
+      '<button type="button" class="bnh-tb-toggle" id="bnh-tb-toggle">收起</button>' +
+      '</div>' +
+      '<div class="bnh-tb-body">' +
       '<button type="button" id="bnh-scan-page">扫描本页</button>' +
       '<button type="button" id="bnh-scan-auto">自动翻页扫描</button>' +
       '<button type="button" id="bnh-scan-stop" hidden>停止</button>' +
@@ -864,8 +1013,19 @@
       '<div class="bnh-tb-progress-bar"><i id="bnh-scan-progress-fill"></i></div>' +
       '<div class="bnh-tb-progress-meta" id="bnh-scan-progress-meta">0%</div>' +
       '</div>' +
-      '<div class="bnh-tb-status" id="bnh-scan-status">仅收集页面上可见的关注项</div>';
+      '<div class="bnh-tb-status" id="bnh-scan-status">仅收集页面上可见的关注项</div>' +
+      '</div>';
     document.documentElement.appendChild(bar);
+
+    const savedPos = readToolbarPos();
+    if (savedPos) applyToolbarPos(bar, savedPos.left, savedPos.top);
+    setToolbarCollapsed(bar, readToolbarCollapsed());
+    bindToolbarDrag(bar);
+
+    document.getElementById('bnh-tb-toggle').addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      setToolbarCollapsed(bar, !bar.classList.contains('bnh-tb-collapsed'));
+    });
 
     document.getElementById('bnh-scan-page').addEventListener('click', async () => {
       const status = document.getElementById('bnh-scan-status');

@@ -179,6 +179,7 @@ async function completeDomAutoSync(payload, senderTabId) {
     lastScanResult: {
       ok: !!body.ok,
       total: body.seen || 0,
+      pages: body.pages || 0,
       changed: 0,
       at: now,
       via: 'dom-auto'
@@ -584,18 +585,47 @@ async function handleMessage(msg, sender) {
         const result = await recordName(it.mid, it.name, now);
         if (result.changed) changed += 1;
       }
+      // roundSeen：自动翻页时传整轮累计人数，避免被「当页人数」覆盖
+      const roundSeen =
+        typeof msg.roundSeen === 'number' && msg.roundSeen >= 0
+          ? msg.roundSeen
+          : items.length;
+      const pages =
+        typeof msg.pages === 'number' && msg.pages > 0 ? msg.pages : 1;
       const patch = {
         lastScanAt: now,
         lastScanResult: {
           ok: true,
-          total: items.length,
+          total: roundSeen,
+          pages: pages,
           changed: changed,
           at: now
         }
       };
       if (msg.force) patch.collectPausedUntil = 0;
       await setSettings(patch);
-      return { total: items.length, changed: changed };
+      return { total: roundSeen, pageTotal: items.length, changed: changed };
+    }
+    case 'DOM_SCAN_ROUND_DONE': {
+      // 自动翻页整轮结束（含手动停止）：写入本轮累计
+      const now = Date.now();
+      const seen =
+        typeof msg.seen === 'number' && msg.seen >= 0 ? msg.seen : 0;
+      const pages =
+        typeof msg.pages === 'number' && msg.pages > 0 ? msg.pages : 0;
+      await setSettings({
+        lastScanAt: now,
+        lastScanResult: {
+          ok: msg.ok !== false,
+          total: seen,
+          pages: pages,
+          changed: 0,
+          at: now,
+          via: 'dom-round',
+          reason: msg.reason || ''
+        }
+      });
+      return { total: seen, pages: pages };
     }
     case 'GET_FORMER': {
       if (isSelfMid(msg.mid)) return [];

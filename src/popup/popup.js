@@ -85,7 +85,11 @@ async function refresh() {
 
   let scanLine = 'DOM 扫描：' + formatTime(s.lastScanAt, '尚未扫描');
   if (s.lastScanResult && s.lastScanResult.ok) {
-    scanLine += '（本批 ' + s.lastScanResult.total + '）';
+    let extra = '本轮 ' + s.lastScanResult.total + ' 人';
+    if (s.lastScanResult.pages > 1) {
+      extra += '，' + s.lastScanResult.pages + ' 页';
+    }
+    scanLine += '（' + extra + '）';
   }
   document.getElementById('lastSync').textContent = scanLine;
 
