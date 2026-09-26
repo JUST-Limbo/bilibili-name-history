@@ -1,0 +1,165 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  width: 320px;
+  margin: 0;
+  padding: 14px;
+  font: 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #18191c;
+  background: #f6f7f8;
+}
+header h1 {
+  margin: 0;
+  font-size: 16px;
+}
+.sub {
+  margin: 4px 0 12px;
+  color: #9499a0;
+  font-size: 12px;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e3e5e7;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.row.muted,
+.muted {
+  color: #9499a0;
+  font-size: 12px;
+}
+.hint {
+  margin: 8px 0 0;
+  color: #9499a0;
+  font-size: 12px;
+}
+.speed-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.speed-opt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.speed-opt input {
+  margin: 0;
+}
+.speed-opt input.hours,
+#autoSyncIntervalHours {
+  width: 52px;
+  height: 26px;
+  margin: 0 4px;
+  border: 1px solid #e3e5e7;
+  border-radius: 4px;
+  padding: 0 6px;
+}
+button {
+  border: 1px solid #e3e5e7;
+  background: #fff;
+  border-radius: 6px;
+  height: 32px;
+  padding: 0 12px;
+  cursor: pointer;
+  font-size: 13px;
+  width: 100%;
+}
+button.primary {
+  width: 100%;
+  background: #00aeec;
+  border-color: #00aeec;
+  color: #fff;
+  font-weight: 600;
+}
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+button.warn {
+  width: 100%;
+  background: #fff7e6;
+  border-color: #ffd591;
+  color: #d46b08;
+  font-weight: 600;
+}
+button.warn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+button.warn:hover:not(:disabled) {
+  background: #fff1b8;
+  border-color: #ffa940;
+}
+.card.warn {
+  border-color: #ffd591;
+  background: #fffbe6;
+}
+.hint.warn-text {
+  color: #ad6800;
+  line-height: 1.55;
+}
+.hint.warn-text code {
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0 3px;
+  border-radius: 3px;
+}
+button.danger {
+  width: 100%;
+  background: #fff;
+  border-color: #ffa39e;
+  color: #cf1322;
+}
+button.danger:hover:not(:disabled) {
+  background: #fff1f0;
+  border-color: #ff4d4f;
+}
+button:hover:not(:disabled) {
+  filter: brightness(0.97);
+}
+.check,
+.hour {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.hour input {
+  width: 48px;
+  height: 28px;
+  border: 1px solid #e3e5e7;
+  border-radius: 4px;
+  padding: 0 6px;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.actions button {
+  flex: 1;
+  width: auto;
+}
+.msg {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.msg.ok {
+  background: #f6ffed;
+  color: #389e0d;
+}
+.msg.err {
+  background: #fff2f0;
+  color: #cf1322;
+}

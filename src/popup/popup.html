@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>B站曾用名</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>B站曾用名</h1>
+    <p class="sub">默认 DOM 收集；API 同步为可选高风险方式</p>
+  </header>
+
+  <section class="card">
+    <div class="row">
+      <span>已记录 UP</span>
+      <strong id="statUsers">-</strong>
+    </div>
+    <div class="row">
+      <span>发生过改名</span>
+      <strong id="statRenamed">-</strong>
+    </div>
+    <div class="row muted" id="lastSync">打开关注列表可扫描本页</div>
+    <div class="row muted" id="lastApiSync">尚未使用 API 同步</div>
+    <div class="row muted" id="lastAutoSync">尚未自动同步</div>
+  </section>
+
+  <section class="card">
+    <div class="speed-title">收集速度</div>
+    <label class="speed-opt">
+      <input type="radio" name="collectSpeed" value="slow" checked />
+      <span>低速（更稳，推荐）</span>
+    </label>
+    <label class="speed-opt">
+      <input type="radio" name="collectSpeed" value="fast" />
+      <span>高速（更快，风控更高）</span>
+    </label>
+    <p class="hint">
+      同时作用于「关注页自动翻页」与「API 同步」。低速拉长翻页间隔并加随机抖动，
+      <strong>可能降低</strong>触发概率，但<strong>不能保证</strong>免风控。
+    </p>
+  </section>
+
+  <section class="card">
+    <div class="speed-title">自动同步</div>
+    <label class="speed-opt">
+      <input type="checkbox" id="autoSyncOnFirstVisit" />
+      <span>本会话首次访问 B 站时同步</span>
+    </label>
+    <label class="speed-opt">
+      <input type="checkbox" id="autoSyncOnInterval" />
+      <span>距上次自动同步超过</span>
+      <input type="number" id="autoSyncIntervalHours" min="1" max="720" value="24" class="hours" />
+      <span>小时后再访问时同步</span>
+    </label>
+    <div class="speed-title" style="margin-top:10px">自动同步方式</div>
+    <label class="speed-opt">
+      <input type="radio" name="autoSyncMethod" value="dom" checked />
+      <span>DOM：后台打开关注页，扫完自动关页（推荐）</span>
+    </label>
+    <label class="speed-opt">
+      <input type="radio" name="autoSyncMethod" value="api" />
+      <span>API：直接请求关注接口（有风控风险）</span>
+    </label>
+    <p class="hint">
+      自动同步<strong>不必只走 API</strong>。默认会在后台打开关注列表、按当前速度翻页扫描，结束后关闭该标签页。
+      需已登录且能识别 UID。
+    </p>
+  </section>
+
+  <section class="card">
+    <button id="btnOpenList" class="primary">打开记录列表</button>
+    <p class="hint">查看已记录的 UID / 昵称 / 曾用名。</p>
+  </section>
+
+  <section class="card">
+    <button id="btnOpenFollow">打开我的关注列表</button>
+    <p class="hint">在关注页用右下角「扫描本页 / 自动翻页扫描」收集。</p>
+  </section>
+
+  <section class="card">
+    <button id="btnSyncDom" class="primary">DOM 翻页同步关注列表</button>
+    <p class="hint">
+      后台打开关注页，按上方速度自动翻页扫描，完成后自动关闭该标签页。
+      不直接请求关注列表 API，相对更接近正常浏览。
+    </p>
+  </section>
+
+  <section class="card warn">
+    <button id="btnSyncApi" class="warn">API 同步关注列表</button>
+    <p class="hint warn-text">
+      将直接请求 <code>api.bilibili.com</code> 的关注列表接口并自动翻页拉取。
+      短时间大量请求<strong>可能触发账号风控</strong>（验证码、临时限制访问、接口失败等）。
+      请确认已登录；建议优先用关注页 DOM 扫描，仅在必要时偶尔手动使用本按钮。
+    </p>
+  </section>
+
+  <section class="card actions">
+    <button id="btnExport">导出备份</button>
+    <button id="btnImport">导入备份</button>
+    <input type="file" id="fileImport" accept="application/json,.json" hidden />
+  </section>
+
+  <section class="card">
+    <button id="btnClear" class="danger">清空本地备份</button>
+    <p class="hint">删除本机全部昵称历史，不可恢复；建议先导出。</p>
+  </section>
+
+  <p id="msg" class="msg" hidden></p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

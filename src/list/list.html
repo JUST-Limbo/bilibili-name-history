@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>曾用名列表 - B站曾用名</title>
+  <link rel="stylesheet" href="list.css" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>本机昵称记录</h1>
+      <p class="sub">仅显示扩展备份过的 UP；点昵称打开空间</p>
+    </div>
+    <div class="top-actions">
+      <button id="btnRefresh">刷新</button>
+      <button id="btnOpenFollow" class="primary">去关注列表扫描</button>
+      <button id="btnClear" class="danger">清空备份</button>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <input id="q" type="search" placeholder="搜索昵称 / UID / 曾用名" />
+    <div class="filters">
+      <button type="button" class="chip active" data-filter="all">全部</button>
+      <button type="button" class="chip" data-filter="renamed">有曾用名</button>
+      <button type="button" class="chip" data-filter="cancelled">已注销</button>
+    </div>
+    <div class="count" id="count">-</div>
+  </section>
+
+  <p id="msg" class="msg" hidden></p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>当前昵称</th>
+          <th>曾用名</th>
+          <th>UID</th>
+          <th>更新时间</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="4" class="empty">加载中…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script type="module" src="list.js"></script>
+</body>
+</html>

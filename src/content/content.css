@@ -1,0 +1,159 @@
+.bnh-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 280px;
+  margin-left: 6px;
+  padding: 0 6px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #61666d;
+  background: #f1f2f3;
+  border: 1px solid #e3e5e7;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  font-weight: 400;
+}
+
+.bnh-badge[data-bnh-kind='gone'] {
+  color: #c44a4a;
+  background: #fff1f0;
+  border-color: #ffccc7;
+}
+
+.bnh-badge[data-bnh-kind='renamed'] {
+  color: #0b6e99;
+  background: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.bnh-badge strong {
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+#bnh-follow-toolbar {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  z-index: 2147483646;
+  width: 260px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e3e5e7;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font: 12px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #18191c;
+}
+
+#bnh-follow-toolbar .bnh-tb-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+#bnh-follow-toolbar button {
+  display: block;
+  width: 100%;
+  height: 30px;
+  margin-bottom: 6px;
+  border: 1px solid #e3e5e7;
+  border-radius: 6px;
+  background: #f6f7f8;
+  cursor: pointer;
+}
+
+#bnh-follow-toolbar button:hover {
+  background: #e3f5ff;
+  border-color: #00aeec;
+  color: #00aeec;
+}
+
+#bnh-follow-toolbar .bnh-tb-progress {
+  margin: 8px 0 4px;
+}
+
+#bnh-follow-toolbar .bnh-tb-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #e3e5e7;
+  overflow: hidden;
+}
+
+#bnh-follow-toolbar .bnh-tb-progress-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  background: #00aeec;
+  transition: width 0.25s ease;
+}
+
+#bnh-follow-toolbar .bnh-tb-progress-meta {
+  margin-top: 4px;
+  color: #61666d;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+#bnh-follow-toolbar .bnh-tb-status {
+  margin-top: 4px;
+  color: #9499a0;
+  word-break: break-all;
+  white-space: pre-line;
+}
+
+#bnh-toast-host {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+  max-width: min(360px, calc(100vw - 40px));
+}
+
+.bnh-toast {
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font: 12px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  word-break: break-word;
+}
+
+.bnh-toast-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bnh-toast-err {
+  color: #a8071a;
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+.bnh-toast-ok {
+  color: #135200;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.bnh-toast-info {
+  color: #0958d9;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+}

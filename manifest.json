@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "B站曾用名",
+  "version": "0.0.1",
+  "description": "从关注列表/空间/视频页 DOM 收集昵称历史，本地展示曾用名。支持自动同步与可选 API。",
+  "permissions": ["storage", "offscreen", "scripting"],
+  "host_permissions": [
+    "https://space.bilibili.com/*",
+    "https://www.bilibili.com/*",
+    "https://api.bilibili.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "B站曾用名",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://space.bilibili.com/*",
+        "https://www.bilibili.com/*"
+      ],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
