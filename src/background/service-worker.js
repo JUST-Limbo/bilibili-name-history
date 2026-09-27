@@ -46,9 +46,8 @@ function isSelfMid(mid) {
 }
 
 async function isCollectPaused() {
-  const settings = await getSettings();
-  const until = Number(settings.collectPausedUntil) || 0;
-  return until > Date.now();
+  // 已取消「清空后被动收集冷却」；保留函数以免改动调用方
+  return false;
 }
 
 async function setSelfMid(mid) {
@@ -729,14 +728,12 @@ async function handleMessage(msg, sender) {
     }
     case 'CLEAR_DATA': {
       await clearAllUsers();
-      // 暂停被动收集一段时间，避免仍打开的 B 站页立刻又写回来
-      const pauseMs = 10 * 60 * 1000;
       await setSettings({
         lastScanAt: 0,
         lastScanResult: null,
-        collectPausedUntil: Date.now() + pauseMs
+        collectPausedUntil: 0
       });
-      return { cleared: true, pausedMinutes: 10 };
+      return { cleared: true };
     }
     default:
       throw new Error('unknown type: ' + msg.type);

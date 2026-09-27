@@ -10,6 +10,8 @@
   let autoStepBusy = false;
   let autoSyncManaged = false;
   let autoSyncBootstrapStarted = false;
+  let savedDocTitle = '';
+  const SCAN_TITLE_PREFIX = '【曾用名·关注扫描中】';
   const autoState = {
     pages: 0,
     seen: null,
@@ -325,7 +327,7 @@
     await ensureSelfMid();
     const items = collectFollowItemsFromDom();
     if (items.length === 0) return;
-    // 被动扫描不强制，清空后的暂停期内不会写回
+    // 被动扫描不强制写入（force=false）
     await applyFollowItems(items, false);
   }
 
@@ -547,6 +549,22 @@
     if (status) status.textContent = text;
   }
 
+  function applyScanTabTitle(detail) {
+    const base = savedDocTitle || document.title.replace(/^【曾用名·关注扫描中】\s*/, '');
+    if (!savedDocTitle) savedDocTitle = base;
+    const tip = detail ? SCAN_TITLE_PREFIX + ' ' + detail : SCAN_TITLE_PREFIX;
+    document.title = tip + (base ? ' · ' + base : '');
+  }
+
+  function restoreScanTabTitle() {
+    if (savedDocTitle) {
+      document.title = savedDocTitle;
+      savedDocTitle = '';
+      return;
+    }
+    document.title = document.title.replace(/^【曾用名·关注扫描中】(?:\s[^·]*)?\s*·\s*/, '');
+  }
+
   function setProgressVisible(show) {
     const wrap = document.getElementById('bnh-scan-progress');
     if (wrap) wrap.hidden = !show;
@@ -585,6 +603,14 @@
       lines.push('预计耗时：收集 1～2 页后估算');
     }
     setAutoStatus(lines.join('\n'));
+    if (autoPaging) {
+      applyScanTabTitle(
+        (p.totalPages > 0 ? p.pages + '/' + p.totalPages + '页' : p.pages + '页') +
+          ' · ' +
+          p.seen +
+          '人'
+      );
+    }
   }
 
   function resetAutoUi() {
@@ -653,6 +679,7 @@
     autoState.seen = null;
     autoSyncManaged = false;
     await send('AUTO_PAGE_STOP');
+    restoreScanTabTitle();
     const fill = document.getElementById('bnh-scan-progress-fill');
     const metaEl = document.getElementById('bnh-scan-progress-meta');
     if (reason && (reason.indexOf('末页') !== -1 || reason.indexOf('未找到下一页') !== -1)) {
@@ -823,6 +850,7 @@
       ? '后台自动同步中，完成后将关闭此标签页…'
       : '开始自动翻页（切走标签页也会继续）…';
     updateAutoProgress(tip);
+    applyScanTabTitle(autoSyncManaged ? '后台同步' : '自动翻页');
 
     const startRes = await send('AUTO_PAGE_START');
     if (!startRes.ok) {

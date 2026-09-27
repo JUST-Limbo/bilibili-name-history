@@ -141,18 +141,12 @@ document.getElementById('btnOpenFollow').addEventListener('click', async () => {
 
 document.getElementById('btnClear').addEventListener('click', async () => {
   const ok = window.confirm(
-    '确定清空本机全部昵称备份？此操作不可恢复。\n清空后约 10 分钟内暂停自动收集（避免仍打开的页面立刻写回）。\n建议先导出备份。'
+    '确定清空本机全部昵称备份？此操作不可恢复。\n建议先导出备份。'
   );
   if (!ok) return;
   try {
-    const result = await send('CLEAR_DATA');
-    showMsg(
-      '本地备份已清空' +
-        (result && result.pausedMinutes
-          ? '，已暂停自动收集 ' + result.pausedMinutes + ' 分钟'
-          : ''),
-      true
-    );
+    await send('CLEAR_DATA');
+    showMsg('本地备份已清空', true);
     await loadList();
   } catch (e) {
     showMsg(String(e.message || e), false);
