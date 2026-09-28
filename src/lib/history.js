@@ -48,7 +48,10 @@ export async function syncFollowings(options) {
   for (let i = 0; i < list.length; i++) {
     const u = list[i];
     if (!u || !u.mid || String(u.mid) === selfMid) continue;
-    const result = await recordName(u.mid, u.name, now);
+    const result = await recordName(u.mid, u.name, now, {
+      mtime: u.mtime || 0,
+      sign: u.sign || ''
+    });
     if (result.changed) changed += 1;
   }
   return {

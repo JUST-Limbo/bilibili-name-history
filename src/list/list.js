@@ -48,6 +48,14 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
+function formatFollowTime(mtime) {
+  const n = Number(mtime) || 0;
+  if (!n) return '—';
+  // B 站 followings 的 mtime 一般为秒级时间戳
+  const ms = n < 1e12 ? n * 1000 : n;
+  return formatTime(ms);
+}
+
 function filteredRows() {
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   return allRows.filter((r) => {
@@ -58,6 +66,10 @@ function filteredRows() {
       r.currentName +
       ' ' +
       r.mid +
+      ' ' +
+      (r.sign || '') +
+      ' ' +
+      (r.formerSigns || []).join(' ') +
       ' ' +
       r.formerNames.join(' ')
     ).toLowerCase();
@@ -71,7 +83,7 @@ function render() {
   const tbody = document.getElementById('tbody');
   if (rows.length === 0) {
     tbody.innerHTML =
-      '<tr><td colspan="4" class="empty">暂无数据。请打开关注列表，用右下角「扫描本页」收集</td></tr>';
+      '<tr><td colspan="7" class="empty">暂无数据。请打开关注列表，用右下角「扫描本页」收集</td></tr>';
     return;
   }
 
@@ -80,9 +92,23 @@ function render() {
       let tag = '';
       if (r.cancelled) tag = '<span class="tag gone">已注销</span>';
       else if (r.formerNames.length) tag = '<span class="tag renamed">改名</span>';
+      else if (r.formerSigns && r.formerSigns.length) {
+        tag = '<span class="tag resign">改签名</span>';
+      }
       const former =
         r.formerNames.length > 0
           ? '<span class="former">' + escapeHtml(r.formerNames.join(' → ')) + '</span>'
+          : '<span style="color:#c9ccd0">—</span>';
+      const sign = r.sign
+        ? '<span class="sign" title="' + escapeHtml(r.sign) + '">' + escapeHtml(r.sign) + '</span>'
+        : '<span style="color:#c9ccd0">—</span>';
+      const formerSigns =
+        r.formerSigns && r.formerSigns.length
+          ? '<span class="former-sign" title="' +
+            escapeHtml(r.formerSigns.join(' → ')) +
+            '">' +
+            escapeHtml(r.formerSigns.join(' → ')) +
+            '</span>'
           : '<span style="color:#c9ccd0">—</span>';
       return (
         '<tr>' +
@@ -98,6 +124,15 @@ function render() {
         '</td>' +
         '<td class="uid">' +
         escapeHtml(r.mid) +
+        '</td>' +
+        '<td class="sign-cell">' +
+        sign +
+        '</td>' +
+        '<td class="sign-cell">' +
+        formerSigns +
+        '</td>' +
+        '<td class="time">' +
+        formatFollowTime(r.mtime) +
         '</td>' +
         '<td class="time">' +
         formatTime(r.updatedAt) +
@@ -166,5 +201,5 @@ document.querySelectorAll('.chip').forEach((btn) => {
 
 loadList().catch((e) => {
   document.getElementById('tbody').innerHTML =
-    '<tr><td colspan="4" class="empty">' + escapeHtml(String(e.message || e)) + '</td></tr>';
+    '<tr><td colspan="7" class="empty">' + escapeHtml(String(e.message || e)) + '</td></tr>';
 });

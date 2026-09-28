@@ -103,6 +103,22 @@ a.name {
 }
 a.name:hover { color: #00aeec; }
 .former { color: #0b6e99; }
+.former-sign { color: #8a6d3b; }
+.tag.resign {
+  background: #fff7e6;
+  color: #d48806;
+}
+.sign-cell {
+  max-width: 220px;
+  color: #61666d;
+}
+.sign {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
 .uid {
   font-family: ui-monospace, Consolas, monospace;
   color: #61666d;

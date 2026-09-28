@@ -62,7 +62,7 @@ export async function getSelfMid() {
 }
 
 /**
- * 拉取自己的全部关注（mid + uname）
+ * 拉取自己的全部关注（mid + uname + mtime + sign 等）
  * onProgress({ fetched, total, page })
  * options: { speed?: 'fast'|'slow', pageDelayMs?, jitterMs? }
  */
@@ -96,7 +96,9 @@ export async function fetchAllFollowings(selfMid, onProgress, options) {
         mid: String(u.mid),
         name: u.uname || u.name || '',
         face: u.face || '',
-        attribute: u.attribute
+        attribute: u.attribute,
+        mtime: typeof u.mtime === 'number' ? u.mtime : Number(u.mtime) || 0,
+        sign: u.sign != null ? String(u.sign) : ''
       });
     }
     if (onProgress) {
