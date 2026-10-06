@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "B站曾用名",
-  "version": "0.0.1",
+  "name": "B站昵称存档",
+  "version": "0.0.2",
   "description": "从关注列表/空间/视频页 DOM 收集昵称历史，本地展示曾用名。支持自动同步与可选 API。",
   "permissions": ["storage", "offscreen", "scripting"],
   "host_permissions": [
@@ -15,7 +15,7 @@
   },
   "action": {
     "default_popup": "src/popup/popup.html",
-    "default_title": "B站曾用名",
+    "default_title": "B站昵称存档",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

@@ -33,7 +33,7 @@
 
 ## 已代为准备（一般不用你改）
 
-- 扩展包：`dist/bilibili-name-history-0.0.1.zip`
+- 扩展包：`dist/bilibili-name-history-0.0.2.zip`
 - 名称、简介、长描述、单项用途、权限理由
 - 隐私政策正文（缺邮箱）
 - MIT LICENSE、仓库免责声明

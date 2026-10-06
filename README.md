@@ -1,4 +1,4 @@
-# B站曾用名（浏览器扩展）
+# B站昵称存档（浏览器扩展）
 
 在关注列表、UP 主页、视频页展示**本机备份过的**昵称历史。  
 默认用页面 DOM 收集；可选 API 同步（有风控风险）。当前版本 `0.0.1`。
@@ -37,7 +37,7 @@
 3. 打开右上角「开发人员模式」
 4. 点击「加载已解压的扩展程序」
 5. 选择本仓库**根目录**（含 `manifest.json` 的那一层）
-6. 确认扩展「B站曾用名」已启用；工具栏可固定图标，方便点开 Popup
+6. 确认扩展「B站昵称存档」已启用；工具栏可固定图标，方便点开 Popup
 
 ### 更新扩展
 
@@ -136,7 +136,8 @@
 
 ## 版本
 
-`0.0.1`：首个公开版本（DOM 收集、自动同步、Popup DOM/API 手动同步、失败飘窗）。
+`0.0.1`：首个公开版本（DOM 收集、自动同步、Popup DOM/API 手动同步、失败飘窗）。  
+`0.0.2`：展示名改为「B站昵称存档」；API 同步写入关注时间与签名历史。
 
 ---
 
@@ -147,4 +148,4 @@
 - 清单（标出需你补充的项）：[`store/CHECKLIST.md`](./store/CHECKLIST.md)
 - 可粘贴文案：[`store/LISTING.md`](./store/LISTING.md)
 - 隐私政策：[`docs/privacy.html`](./docs/privacy.html)
-- 本地打包：`powershell -File scripts/pack.ps1` → 生成 `dist/bilibili-name-history-0.0.1.zip`
+- 本地打包：`powershell -File scripts/pack.ps1` → 生成 `dist/bilibili-name-history-0.0.2.zip`

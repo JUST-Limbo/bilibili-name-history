@@ -1,7 +1,7 @@
-# 隐私政策 · B站曾用名
+# 隐私政策 · B站昵称存档
 
 **生效日期：** 2026-09-26  
-**适用产品：** 浏览器扩展「B站曾用名」（Chrome / Edge，Manifest V3）  
+**适用产品：** 浏览器扩展「B站昵称存档」（Chrome / Edge，Manifest V3）  
 **开源仓库：** https://github.com/JUST-Limbo/bilibili-name-history
 
 本扩展**仅供学习与技术研究**。使用前请阅读并同意本政策及仓库免责声明。
