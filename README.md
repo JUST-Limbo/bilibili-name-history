@@ -4,6 +4,7 @@
 默认用页面 DOM 收集；可选 API 同步（有风控风险）。当前版本 `0.0.1`。
 
 仓库：https://github.com/JUST-Limbo/bilibili-name-history  
+Edge 商店：https://microsoftedge.microsoft.com/addons/detail/lhdjpnjampgbcnhhgmeacdkfgajdaipg  
 协议：[MIT License](./LICENSE)
 
 ---
@@ -142,6 +143,8 @@
 ---
 
 ## 商店上架
+
+Edge 加载项：https://microsoftedge.microsoft.com/addons/detail/lhdjpnjampgbcnhhgmeacdkfgajdaipg
 
 打包与文案见仓库内：
 
